@@ -23,6 +23,9 @@ Environment:
 #endif
 
 
+UNICODE_STRING DEVICE_SYMBOLIC_NAME = RTL_CONSTANT_STRING(L"\\DosDevices\\WebSecUsbDriver");
+
+
 NTSTATUS
 WebSecUsbDriverCreateDevice(
     _Inout_ PWDFDEVICE_INIT DeviceInit
@@ -56,6 +59,8 @@ Return Value:
     WDF_PNPPOWER_EVENT_CALLBACKS_INIT(&pnpPowerCallbacks);
     pnpPowerCallbacks.EvtDevicePrepareHardware = WebSecUsbDriverEvtDevicePrepareHardware;
     WdfDeviceInitSetPnpPowerEventCallbacks(DeviceInit, &pnpPowerCallbacks);
+
+    WdfDeviceInitSetDeviceType(DeviceInit, FILE_DEVICE_USBOTP);
 
     WDF_OBJECT_ATTRIBUTES_INIT_CONTEXT_TYPE(&deviceAttributes, DEVICE_CONTEXT);
 
@@ -93,6 +98,11 @@ Return Value:
             // Initialize the I/O Package and any Queues
             //
             status = WebSecUsbDriverQueueInitialize(device);
+        }
+
+        status = WdfDeviceCreateSymbolicLink(device, &DEVICE_SYMBOLIC_NAME);
+        if (!NT_SUCCESS(status)) {
+            return status;
         }
     }
 

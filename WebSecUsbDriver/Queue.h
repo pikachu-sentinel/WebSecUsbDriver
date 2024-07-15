@@ -33,6 +33,15 @@ WebSecUsbDriverQueueInitialize(
     _In_ WDFDEVICE Device
     );
 
+NTSTATUS
+HandleValidateOtp(
+    WDFREQUEST Request,
+    size_t OutputBufferLength,
+    size_t InputBufferLength
+);
+
+BOOLEAN ValidateOtp(ULONG inputOtp);
+
 //
 // Events from the IoQueue object
 //

@@ -114,6 +114,17 @@ Return Value:
 
 --*/
 {
+    NTSTATUS status = STATUS_SUCCESS;
+
+    switch (IoControlCode) {
+    case IOCTL_USBOTP_VALIDATE_OTP:
+        status = HandleValidateOtp(Request, OutputBufferLength, InputBufferLength);
+        break;
+    default:
+        status = STATUS_INVALID_DEVICE_REQUEST;
+        TraceEvents(TRACE_LEVEL_ERROR, TRACE_QUEUE, "Invalid IOCTL %u", IoControlCode);
+    }
+
     TraceEvents(TRACE_LEVEL_INFORMATION, 
                 TRACE_QUEUE, 
                 "%!FUNC! Queue 0x%p, Request 0x%p OutputBufferLength %d InputBufferLength %d IoControlCode %d", 
@@ -122,6 +133,57 @@ Return Value:
     WdfRequestComplete(Request, STATUS_SUCCESS);
 
     return;
+}
+
+NTSTATUS HandleValidateOtp(
+    WDFREQUEST Request,
+    size_t OutputBufferLength,
+    size_t InputBufferLength
+)
+{
+    NTSTATUS status = STATUS_SUCCESS;
+    // Define your OTP input and output structures
+    PULONG inputOtp = NULL;
+    BOOLEAN* outputResult = NULL;
+
+    // Ensure the input buffer length is as expected
+    if (InputBufferLength < sizeof(ULONG)) {
+        return STATUS_BUFFER_TOO_SMALL;
+    }
+
+    // Ensure the output buffer length is as expected
+    if (OutputBufferLength < sizeof(BOOLEAN)) {
+        return STATUS_BUFFER_TOO_SMALL;
+    }
+
+    // Retrieve the input buffer containing the OTP
+    status = WdfRequestRetrieveInputBuffer(Request, sizeof(ULONG), (PVOID*)&inputOtp, NULL);
+    if (!NT_SUCCESS(status)) {
+        return status;
+    }
+
+    // Assume the input is a ULONG for OTP and output is a BOOLEAN for result
+    status = WdfRequestRetrieveInputBuffer(Request, sizeof(ULONG), &inputOtp, NULL);
+    if (!NT_SUCCESS(status)) {
+        return status;
+    }
+
+    // Retrieve the output buffer where the validation result will be stored
+    status = WdfRequestRetrieveOutputBuffer(Request, sizeof(BOOLEAN), (PVOID*)&outputResult, NULL);
+    if (!NT_SUCCESS(status)) {
+        return status;
+    }
+
+    // Validate the OTP - Placeholder for actual validation logic
+    *outputResult = ValidateOtp(*inputOtp); // Assume ValidateOtp returns a BOOLEAN
+
+    return status;
+}
+
+BOOLEAN ValidateOtp(ULONG inputOtp) {
+    // Implement the validation logic here
+    // Return TRUE if valid, FALSE otherwise
+    return (inputOtp == 123456); // Example logic
 }
 
 VOID

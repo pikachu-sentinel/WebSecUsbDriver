@@ -28,7 +28,7 @@ WebSecUsbDriver.sys  = 1,,
 %ManufacturerName%=Standard,NT$ARCH$.10.0...16299 ; %13% support introduced in build 16299
 
 [Standard.NT$ARCH$.10.0...16299]
-%WebSecUsbDriver.DeviceDesc%=WebSecUsbDriver_Device, USB\VID_vvvv&PID_pppp
+%WebSecUsbDriver.DeviceDesc%=WebSecUsbDriver_Device, USB\VID_1908&PID_2312
 
 [WebSecUsbDriver_Device.NT]
 CopyFiles=File_Copy
@@ -64,7 +64,7 @@ KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
-ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ManufacturerName="WebSec"
 DiskName = "WebSecUsbDriver Installation Disk"
 WebSecUsbDriver.DeviceDesc = "WebSecUsbDriver Device"
 WebSecUsbDriver.SVCDESC = "WebSecUsbDriver Service"

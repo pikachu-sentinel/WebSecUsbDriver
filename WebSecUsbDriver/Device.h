@@ -26,6 +26,8 @@ typedef struct _DEVICE_CONTEXT
 {
     WDFUSBDEVICE UsbDevice;
     ULONG PrivateDeviceData;  // just a placeholder
+    WDFUSBPIPE BulkReadPipe;
+    WDFUSBPIPE BulkWritePipe;
 
 } DEVICE_CONTEXT, *PDEVICE_CONTEXT;
 
@@ -44,10 +46,6 @@ WebSecUsbDriverCreateDevice(
     _Inout_ PWDFDEVICE_INIT DeviceInit
     );
 
-//
-// Function to select the device's USB configuration and get a WDFUSBDEVICE
-// handle
-//
-EVT_WDF_DEVICE_PREPARE_HARDWARE WebSecUsbDriverEvtDevicePrepareHardware;
+NTSTATUS WebSecUsbDriverEvtDevicePrepareHardware(_In_ WDFDEVICE Device, _In_ WDFCMRESLIST ResourceList, _In_ WDFCMRESLIST ResourceListTranslated);
 
 EXTERN_C_END
